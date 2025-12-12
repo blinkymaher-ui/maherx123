@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الى اميرتي ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+            font-family: 'Tajawal', sans-serif;
+            padding: 20px 0;
+            overflow-x: hidden;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* خلفية القلوب المتحركة */
+        .bg-hearts {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; overflow: hidden;
+        }
+
+        .bg-heart {
+            position: absolute; font-size: 20px; color: rgba(255, 182, 193, 0.6);
+            animation: float 6s linear infinite; bottom: -10vh;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* القلوب عند النقر (اللمسة السحرية) */
+        .click-heart {
+            position: absolute; width: 30px; height: 30px;
+            background: url('https://img.icons8.com/emoji/48/000000/red-heart.png') no-repeat center/contain;
+            pointer-events: none;
+            animation: popUp 0.8s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes popUp {
+            0% { transform: scale(0.5) translateY(0); opacity: 1; }
+            100% { transform: scale(1.5) translateY(-60px); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 90%;
+            width: 380px;
+            transition: all 0.3s ease;
+            max-height: 95vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { color: #d63384; margin-bottom: 15px; font-size: 24px; }
+        p { font-size: 16px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+
+        input {
+            width: 80%; padding: 12px; border: 2px solid #ffccd5;
+            border-radius: 10px; font-size: 16px; text-align: center;
+            outline: none; margin-bottom: 15px;
+        }
+
+        button {
+            background-color: #d63384; color: white; border: none;
+            padding: 12px 30px; font-size: 18px; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(214, 51, 132, 0.3);
+            width: 100%; margin-top: 10px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        button:hover { transform: scale(1.02); background-color: #b02a6b; }
+
+        .hidden { display: none; }
+        
+        .heart-beat {
+            font-size: 50px; color: #ff4757;
+            animation: beat 0.8s infinite alternate;
+            display: block; margin-bottom: 10px;
+        }
+
+        @keyframes beat { to { transform: scale(1.1); } }
+        .error-msg { color: red; margin-top: 10px; font-size: 14px; display: none; }
+
+        .couple-photo {
+            width: 100%; height: auto; border-radius: 15px;
+            margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid #fff;
+        }
+
+        #loveTimer {
+            font-size: 16px; color: #d63384; font-weight: bold;
+            margin: 15px 0 10px 0; padding: 10px;
+            background-color: rgba(214, 51, 132, 0.1);
+            border-radius: 10px; line-height: 1.6;
+        }
+
+        /* تنسيق النص المتغير */
+        #changingText {
+            font-size: 18px; color: #b02a6b; margin-bottom: 15px;
+            min-height: 25px; font-weight: bold;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .letter-box {
+            margin-top: 20px; background: #fff0f3; padding: 20px;
+            border-radius: 15px; border: 2px dashed #d63384;
+            text-align: center; font-size: 18px; color: #b02a6b;
+            font-weight: bold; display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .letter-btn { background-color: #9b59b6; margin-top: 15px; }
+        .letter-btn:hover { background-color: #8e44ad; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div class="container" id="loginCard">
+        <h1>هلا هلا بدنيتي ! حلي هالسؤال يا جميلة</h1>
+        <p>مين حبيبك</p>
+        <input type="text" id="nameInput" placeholder="اكتبي اسمه هنا...">
+        <button onclick="checkName()">تأكيد الإجابة</button>
+        <div id="error" class="error-msg">خطا !! </div>
+    </div>
+
+    <div class="container hidden" id="surpriseCard">
+        <span class="heart-beat">❤️</span>
+        <h1>يا شطوووووووووورة !!!</h1>
+        
+        <img src="https://i.ibb.co/tp0kC6Zt/5899859586993294346.jpg" alt="Our Photo" class="couple-photo">
+
+        <p style="font-size: 20px; color: #d63384; font-weight: bold;">
+            شطووورة يا جميلة حبيبك
+        </p>
+        <p>احبك والله احبك وشوفي هالرسالة تحت</p>
+        
+        <div id="loveTimer">ايامنا سوا ..</div>
+
+        <div id="changingText">أحب ضحكتك ❤️</div>
+
+        <button onclick="toggleLetter()" class="letter-btn">💌 اضغطي هنا لرسالة خاصة</button>
+        
+        <div id="secretLetter" class="letter-box">
+            اذا شفتي هالرساله قولي لي احبك وعبري عن حبك لي ❤️
+        </div>
+    </div>
+
+    <div id="youtube-audio" class="hidden"></div>
+
+    <script>
+        // --- مشغل يوتيوب ---
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-audio', {
+                height: '0', width: '0', videoId: 'igIX8CpKPQI', 
+                playerVars: { 'autoplay': 0, 'controls': 0, 'showinfo': 0, 'loop': 1 },
+                events: { 'onReady': onPlayerReady }
+            });
+        }
+        function onPlayerReady(event) {}
+        
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // إنشاء القلوب الخلفية
+        function createHearts() {
+            const heartsContainer = document.getElementById('bgHearts');
+            for (let i = 0; i < 15; i++) {
+                let heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('bg-heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heartsContainer.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // **اللمسة السحرية: قلوب عند النقر**
+        document.addEventListener('click', function(e) {
+            // عشان ما تغطي على الأزرار
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+
+            var heart = document.createElement('div');
+            heart.classList.add('click-heart');
+            heart.style.left = (e.pageX - 15) + 'px'; 
+            heart.style.top = (e.pageY - 15) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(function() { heart.remove(); }, 800);
+        });
+
+        // **قائمة الجمل المتغيرة**
+        const phrases = [
+            "أحب ضحكتك",
+            "احب جمالك",
+            "احب وجودك",
+            "احب ملامحك",
+            "احب جسمك",
+            "احب اسلوبك",
+            "احب كلامك",
+            "أحب مشاعرك",
+            "احب وقفتك معي"
+        ];
+        
+        let phraseIndex = 0;
+        function changeText() {
+            const textElement = document.getElementById('changingText');
+            textElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                textElement.innerText = phrases[phraseIndex] + " ❤️";
+                textElement.style.opacity = 1;
+            }, 500);
+        }
+        setInterval(changeText, 2500);
+
+        function checkName() {
+            const input = document.getElementById('nameInput').value.trim();
+            const card1 = document.getElementById('loginCard');
+            const card2 = document.getElementById('surpriseCard');
+            const errorMsg = document.getElementById('error');
+
+            if (input === "ماهر" || input === "نوني") {
+                card1.classList.add('hidden');
+                card2.classList.remove('hidden');
+                launchFireworks();
+                
+                if (player && player.playVideo) {
+                    player.setVolume(80);
+                    player.playVideo();
+                }
+                
+                startLoveTimer();
+            } else {
+                errorMsg.style.display = "block";
+                card1.style.transform = "translateX(10px)";
+                setTimeout(() => { card1.style.transform = "translateX(-10px)"; }, 100);
+                setTimeout(() => { card1.style.transform = "translateX(0)"; }, 200);
+            }
+        }
+
+        // إظهار وإخفاء الرسالة
+        function toggleLetter() {
+            const letter = document.getElementById('secretLetter');
+            const btn = document.querySelector('.letter-btn');
+            
+            if (letter.style.display === "block") {
+                letter.style.display = "none";
+                btn.innerText = "💌 اضغطي هنا لرسالة خاصة";
+            } else {
+                letter.style.display = "block";
+                btn.innerText = "إخفاء الرسالة";
+                letter.scrollIntoView({ behavior: 'smooth' });
+                launchFireworks();
+            }
+        }
+
+        function startLoveTimer() {
+            // تاريخ البداية: 24 نوفمبر 2025
+            const startDate = new Date("November 24, 2025 00:00:00").getTime();
+            const timerInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = now - startDate; 
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("loveTimer").innerHTML = 
+                    `صرنا حبايب من:<br>${days} يوم و ${hours} ساعة و ${minutes} دقيقة و ${seconds} ثانية ❤️`;
+            }, 1000);
+        }
+
+        function launchFireworks() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
