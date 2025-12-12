@@ -23,7 +23,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* خلفية القلوب المتحركة */
+        /* خلفية القلوب */
         .bg-hearts {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: -1; overflow: hidden;
@@ -39,7 +39,7 @@
             100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* القلوب عند النقر (اللمسة السحرية) */
+        /* اللمسة السحرية */
         .click-heart {
             position: absolute; width: 30px; height: 30px;
             background: url('https://img.icons8.com/emoji/48/000000/red-heart.png') no-repeat center/contain;
@@ -101,8 +101,14 @@
 
         .couple-photo {
             width: 100%; height: auto; border-radius: 15px;
-            margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 15px; 
             border: 3px solid #fff;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #ffccd5; }
+            to { box-shadow: 0 0 20px #d63384, 0 0 10px #ffccd5; }
         }
 
         #loveTimer {
@@ -112,11 +118,51 @@
             border-radius: 10px; line-height: 1.6;
         }
 
-        /* تنسيق النص المتغير */
         #changingText {
             font-size: 18px; color: #b02a6b; margin-bottom: 15px;
-            min-height: 25px; font-weight: bold;
-            transition: opacity 0.5s ease-in-out;
+            min-height: 30px; font-weight: bold;
+            display: inline-block;
+        }
+        
+        .cursor {
+            display: inline-block; width: 2px; height: 20px;
+            background-color: #b02a6b; animation: blink 0.7s infinite;
+            vertical-align: middle; margin-right: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* تنسيق الوعود */
+        .promises-container {
+            text-align: right;
+            background: #fff;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 1px solid #ffeef0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .promises-title {
+            color: #d63384; font-size: 18px; font-weight: bold;
+            margin-bottom: 15px; text-align: center;
+        }
+
+        .promise-item {
+            display: flex; align-items: center; margin-bottom: 10px;
+            font-size: 16px; color: #555; cursor: pointer;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .promise-item:last-child { border-bottom: none; }
+
+        .promise-item input {
+            width: 18px; height: 18px; margin: 0 0 0 10px; cursor: pointer;
+            accent-color: #d63384;
+        }
+
+        .promise-item span { transition: all 0.3s; }
+        .promise-item input:checked + span {
+            text-decoration: line-through; color: #d63384; opacity: 0.7;
         }
 
         .letter-box {
@@ -139,7 +185,7 @@
     <div class="bg-hearts" id="bgHearts"></div>
 
     <div class="container" id="loginCard">
-        <h1>هلا هلا بدنيتي ! حلي هالسؤال يا جميلة</h1>
+        <h1>اختبار سريع 😉</h1>
         <p>مين حبيبك</p>
         <input type="text" id="nameInput" placeholder="اكتبي اسمه هنا...">
         <button onclick="checkName()">تأكيد الإجابة</button>
@@ -155,11 +201,41 @@
         <p style="font-size: 20px; color: #d63384; font-weight: bold;">
             شطووورة يا جميلة حبيبك
         </p>
-        <p>احبك والله احبك وشوفي هالرسالة تحت</p>
+        <p>أحبك ومجهز لك هالمفاجأة البسيطة ✨</p>
         
         <div id="loveTimer">ايامنا سوا ..</div>
 
-        <div id="changingText">أحب ضحكتك ❤️</div>
+        <div>
+            <span id="changingText"></span><span class="cursor"></span>
+        </div>
+
+        <div class="promises-container">
+            <div class="promises-title">وعودي لك يا نوني 💍</div>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>اوعدك بكون سندك</span>
+            </label>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>اوعدك ما بزعلك بيوم</span>
+            </label>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>أوعدك اني بكون لك</span>
+            </label>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>أوعدك ما بكون لغيرك</span>
+            </label>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>اوعدك مراح اخذلك</span>
+            </label>
+            
+            <label class="promise-item">
+                <input type="checkbox"> <span>أوعدك اني ببقى احبك</span>
+            </label>
+        </div>
 
         <button onclick="toggleLetter()" class="letter-btn">💌 اضغطي هنا لرسالة خاصة</button>
         
@@ -171,7 +247,6 @@
     <div id="youtube-audio" class="hidden"></div>
 
     <script>
-        // --- مشغل يوتيوب ---
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-audio', {
@@ -187,7 +262,6 @@
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        // إنشاء القلوب الخلفية
         function createHearts() {
             const heartsContainer = document.getElementById('bgHearts');
             for (let i = 0; i < 15; i++) {
@@ -202,11 +276,8 @@
         }
         createHearts();
 
-        // **اللمسة السحرية: قلوب عند النقر**
         document.addEventListener('click', function(e) {
-            // عشان ما تغطي على الأزرار
             if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
-
             var heart = document.createElement('div');
             heart.classList.add('click-heart');
             heart.style.left = (e.pageX - 15) + 'px'; 
@@ -215,31 +286,44 @@
             setTimeout(function() { heart.remove(); }, 800);
         });
 
-        // **قائمة الجمل المتغيرة**
         const phrases = [
-            "أحب ضحكتك",
-            "احب جمالك",
-            "احب وجودك",
-            "احب ملامحك",
-            "احب جسمك",
-            "احب اسلوبك",
-            "احب كلامك",
-            "أحب مشاعرك",
-            "احب وقفتك معي"
+            "أحب ضحكتك", "احب جمالك", "احب وجودك", 
+            "احب ملامحك", "احب جسمك", "احب اسلوبك", 
+            "احب كلامك", "أحب مشاعرك", "احب وقفتك معي"
         ];
         
         let phraseIndex = 0;
-        function changeText() {
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        function typeWriter() {
+            const currentPhrase = phrases[phraseIndex];
             const textElement = document.getElementById('changingText');
-            textElement.style.opacity = 0;
             
-            setTimeout(() => {
+            if (isDeleting) {
+                textElement.innerText = currentPhrase.substring(0, charIndex - 1) + " ❤️";
+                charIndex--;
+                typeSpeed = 50;
+            } else {
+                textElement.innerText = currentPhrase.substring(0, charIndex + 1) + " ❤️";
+                charIndex++;
+                typeSpeed = 100;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                typeSpeed = 2000;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
                 phraseIndex = (phraseIndex + 1) % phrases.length;
-                textElement.innerText = phrases[phraseIndex] + " ❤️";
-                textElement.style.opacity = 1;
-            }, 500);
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeWriter, typeSpeed);
         }
-        setInterval(changeText, 2500);
+
+        let typewriterStarted = false;
 
         function checkName() {
             const input = document.getElementById('nameInput').value.trim();
@@ -258,6 +342,12 @@
                 }
                 
                 startLoveTimer();
+                
+                if (!typewriterStarted) {
+                    typeWriter();
+                    typewriterStarted = true;
+                }
+
             } else {
                 errorMsg.style.display = "block";
                 card1.style.transform = "translateX(10px)";
@@ -266,11 +356,9 @@
             }
         }
 
-        // إظهار وإخفاء الرسالة
         function toggleLetter() {
             const letter = document.getElementById('secretLetter');
             const btn = document.querySelector('.letter-btn');
-            
             if (letter.style.display === "block") {
                 letter.style.display = "none";
                 btn.innerText = "💌 اضغطي هنا لرسالة خاصة";
@@ -283,9 +371,8 @@
         }
 
         function startLoveTimer() {
-            // تاريخ البداية: 24 نوفمبر 2025
             const startDate = new Date("November 24, 2025 00:00:00").getTime();
-            const timerInterval = setInterval(function() {
+            setInterval(function() {
                 const now = new Date().getTime();
                 const distance = now - startDate; 
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
